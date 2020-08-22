@@ -4,18 +4,18 @@ def decode(a):
     if not a.startswith('<~'):
         print('start marker not found')
         return False
-    print('start marker found')
+    #print('start marker found')
     if not a.endswith('~>'):
         print('end marker not found')
         return False
-    print('end marker found')
+    #print('end marker found')
     a = a[2:len(a)-2]
 
     decoded = bytearray()
     fulltuples = len(a) // 5
     remainder = len(a) % 5
-    print(fulltuples)
-    print(remainder)
+    #print(fulltuples)
+    #print(remainder)
     currentoffset = 0
     for i in range(fulltuples):
         decoded += decodeTuple(a[currentoffset:currentoffset+5])

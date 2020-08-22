@@ -26,15 +26,14 @@ def writetofile(filename, data):
     f.close()
 
 def layer1bitmod(decoded):
-    decoded2 = []
-    for i in range(len(decoded)):
-      c = ord(decoded[i])
+    decoded2 = bytearray()
+    for c in decoded:
       c ^= 0b01010101
       last = c & 1
       c >>= 1
       c |= (last << 7)
-      decoded2.append(chr(c))
-    return ''.join(decoded2)
+      decoded2.append(c)
+    return decoded2
 
 def layer2parityvalid(i):
     amountofones = 0
@@ -44,9 +43,8 @@ def layer2parityvalid(i):
     return (amountofones & 1) == 0
 
 def layer2filtervalid(payload):
-    valid = []
-    for i in range(len(payload)):
-        c = ord(payload[i])
+    valid = bytearray()
+    for c in payload:
         if(layer2parityvalid(c)):
             valid.append(c)
 
@@ -61,20 +59,25 @@ def layer2filtervalid(payload):
             currentsum = 0
         i += 1
 
-    divided = []
+    divided = bytearray()
     for ii in merged:
         for i in range(7):
-            divided.append(chr((ii >> (i * 8)) & 255))
-    return ''.join(divided)
+            divided.append((ii >> (i * 8)) & 255)
+    return divided
 
-inputfile = 'layers/layer2.txt'
+for layer in [2]:
+    inputfile = 'layers/layer' + str(layer) + '.txt'
+    outputfile = 'layers/layer' + str(layer + 1) + '.txt'
 
-payload = loadpayload(inputfile)
-dumpexcerpt(payload, 20, 20)
-decoded = ascii85.decode(payload)
-dumpexcerpt(decoded, 20, 20)
-#decoded = layer1bitmod(decoded)
-decoded = layer2filtervalid(decoded)
-dumpexcerpt(decoded, 20, 20)
+    payload = loadpayload(inputfile)
+    dumpexcerpt(payload, 20, 20)
+    decoded = ascii85.decode(payload)
+    if layer == 1:
+        decoded = layer1bitmod(decoded)
+    elif layer == 2:
+        decoded = layer2filtervalid(decoded)
+    #print(decoded[0:100].decode())
+    #quit()
+    dumpexcerpt(decoded.decode(), 200, 200)
 
-writetofile('layers/layer3.txt', decoded)
+    #writetofile(outputfile, decoded)
