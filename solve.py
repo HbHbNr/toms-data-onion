@@ -46,23 +46,23 @@ def layer2filtervalid(payload):
     valid = bytearray()
     for c in payload:
         if(layer2parityvalid(c)):
-            valid.append(c)
+            valid.append(c >> 1)
 
     merged = []
     currentsum = 0
     i = 0
     while i < len(valid):
-        currentsum <<= 7
-        currentsum |= valid[i] >> 1
-        if (i % 8) == 7:
+        ii = i % 8
+        currentsum |= valid[i] << ((7 - ii) * 7)
+        if ii == 7:
             merged.append(currentsum)
             currentsum = 0
         i += 1
 
     divided = bytearray()
-    for ii in merged:
-        for i in range(7):
-            divided.append((ii >> (i * 8)) & 255)
+    for i in merged:
+        for ii in range(7):
+            divided.append((i >> ((6 - ii) * 8)) & 255)
     return divided
 
 for layer in [2]:
@@ -80,4 +80,4 @@ for layer in [2]:
     #quit()
     dumpexcerpt(decoded.decode(), 200, 200)
 
-    #writetofile(outputfile, decoded)
+    writetofile(outputfile, decoded.decode())
