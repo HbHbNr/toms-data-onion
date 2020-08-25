@@ -1,18 +1,6 @@
-import fileinput
 import ascii85
 
 # GNU General Public License Version 3
-
-def loadpayload(inputfile):
-    payloadmarkerfound = False
-    payload = []
-    for line in fileinput.input(inputfile):
-        if not payloadmarkerfound and line.startswith('<~'):
-            payloadmarkerfound = True
-        if payloadmarkerfound:
-            line = line.strip()
-            payload.append(line)
-    return ''.join(payload)
 
 def dumpexcerpt(fulltext, frombegin, fromend):
     fulltextlength = len(fulltext)
@@ -69,7 +57,7 @@ for layer in [2]:
     inputfile = 'layers/layer' + str(layer) + '.txt'
     outputfile = 'layers/layer' + str(layer + 1) + '.txt'
 
-    payload = loadpayload(inputfile)
+    payload = ascii85.loadpayload(inputfile)
     dumpexcerpt(payload, 20, 20)
     decoded = ascii85.decode(payload)
     if layer == 1:
