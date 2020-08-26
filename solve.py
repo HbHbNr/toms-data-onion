@@ -1,4 +1,4 @@
-import ascii85
+import ascii85, layer3
 
 # GNU General Public License Version 3
 
@@ -53,13 +53,6 @@ def layer2filtervalid(payload):
             divided.append((i >> ((6 - ii) * 8)) & 255)
     return divided
 
-def layer3decrypt(decoded):
-    # as found by layer3.py:
-    xorfull = bytearray(b'l$\x84\x8eB\x19\xa8\xe1\xc5\xdbWe\xb9\xc6\x14\x9e\xa5\x195\x96;9\x7f\xa5e\xd1\xfe\x01\x85}\xd9L')
-    for i in range(len(decoded)):
-        decoded[i] ^= xorfull[i % 32]
-    return(decoded)
-
 for layer in [3]:
     inputfile = 'layers/layer' + str(layer) + '.txt'
     outputfile = 'layers/layer' + str(layer + 1) + '.txt'
@@ -72,7 +65,7 @@ for layer in [3]:
     elif layer == 2:
         decoded = layer2filtervalid(decoded)
     elif layer == 3:
-        decoded = layer3decrypt(decoded)
+        decoded = layer3.decrypt(decoded)
     #print(decoded[0:100].decode())
     #quit()
     dumpexcerpt(decoded.decode(), 200, 200)
