@@ -1,3 +1,5 @@
+import fileinput
+
 # GNU General Public License Version 3
 
 def decode(a):
@@ -40,3 +42,14 @@ def decodeTuple(tuple5):
     #print(tuple5)
     #print(decoded)
     return decoded
+
+def loadpayload(inputfile):
+    payloadmarkerfound = False
+    payload = []
+    for line in fileinput.input(inputfile):
+        if not payloadmarkerfound and line.startswith('<~'):
+            payloadmarkerfound = True
+        if payloadmarkerfound:
+            line = line.strip()
+            payload.append(line)
+    return ''.join(payload)
