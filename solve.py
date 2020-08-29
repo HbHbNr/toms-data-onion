@@ -1,4 +1,4 @@
-import ascii85, layer3
+import ascii85, layer3, layer4
 
 # GNU General Public License Version 3
 
@@ -53,7 +53,7 @@ def layer2filtervalid(payload):
             divided.append((i >> ((6 - ii) * 8)) & 255)
     return divided
 
-for layer in [3]:
+for layer in [4]:
     inputfile = 'layers/layer' + str(layer) + '.txt'
     outputfile = 'layers/layer' + str(layer + 1) + '.txt'
 
@@ -66,6 +66,8 @@ for layer in [3]:
         decoded = layer2filtervalid(decoded)
     elif layer == 3:
         decoded = layer3.decrypt(decoded)
+    elif layer == 4:
+        (_, _, decoded) = layer4.parseIPpackages(decoded)
     #print(decoded[0:100].decode())
     #quit()
     dumpexcerpt(decoded.decode(), 200, 200)
